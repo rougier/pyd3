@@ -156,5 +156,15 @@ class test_scale_linear(unittest.TestCase):
         s = scale.linear(range=["#f00", "#00f"])
         self.assertEqual(s(.5), "#800080")
 
+    def test_18(self):
+        """
+        linear.range(range) can accept range values as arrays or objects
+        """
+        s = scale.linear(range=[{"color": "red"}, {"color": "blue"}])
+        self.assertEqual(s(.5), {"color":"#800080"})
+
+        s = scale.linear(range=[["red"], ["blue"]])
+        self.assertEqual(s(.5), ["#800080"])
+
 if __name__ == "__main__":
     unittest.main()

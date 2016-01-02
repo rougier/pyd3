@@ -85,13 +85,6 @@ def interpolate_value(x, xp, yp, clamp=True):
     """
 
     x = np.asarray(x)
-
-    # Range may have been given as ["1", "2"]
-    #if not isinstance(xp, np.ndarray):
-    #    try:    xp = [float(v) for v in xp]
-    #    except: pass
-    #xp = np.asarray(xp)
-        
     n = len(xp)
     
     # Build (n-1) interpolators for each interval in yp
@@ -203,7 +196,7 @@ class ContinuousScale(object):
         domain = domain[:n]
         range  = range[:n]
 
-        # Coerce domain values if necessay
+        # Coerce domain values if necessary
         # (domain may have been given as ["1", "2"])
         if not isinstance(domain, np.ndarray):
             try:
@@ -222,10 +215,9 @@ class ContinuousScale(object):
             self._forward_range = [range[i] for i in sorted]
 
         # Try to convert range to a numpy array if possible
-        try:
-            self._forward_range = np.asarray(self._forward_range)
-        except:
-            pass
+        if len(self._forward_range):
+            if isinstance(self._forward_range[0], (int,float, np.datetime64)):
+                self._forward_range = np.asarray(self._forward_range)
             
         # Inverse domain & range
         # (range must be sorted in increasing order)
