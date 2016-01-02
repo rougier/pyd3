@@ -46,16 +46,29 @@ def interpolate_number(x, xp, yp, clamp=True):
     Specialized interpolation for array of scalars
     """
     x = np.asarray(x)
+    
+    # Specific case for empty domain
+    if xp[0] == xp[-1] or len(xp)<2:
+        if len(x.shape) == 0:
+            return yp[0]
+        else:
+            return [yp[0],]*len(x)
 
     # Extrapolate
     if not clamp:
         # Single value
         if len(x.shape) == 0:
-            if   x < xp[0]:  return yp[ 0] + (x-xp[ 0])*(yp[ 0]-yp[ 1]) / (xp[ 0]-xp[ 1])
-            elif x > xp[-1]: return yp[-1] + (x-xp[-1])*(yp[-1]-yp[-2]) / (xp[-1]-xp[-2])
-            else:            return np.interp(x, xp, yp)
+            if   x < xp[0]:
+                return yp[ 0] + (x-xp[ 0])*(yp[ 0]-yp[ 1]) / (xp[ 0]-xp[ 1])
+            elif x > xp[-1]:
+                return yp[-1] + (x-xp[-1])*(yp[-1]-yp[-2]) / (xp[-1]-xp[-2])
+            else:
+                return np.interp(x, xp, yp)
         # Values list
         else:
+            # Specific case for empty domain
+            if xp[0] == xp[-1] or len(xp)<2:
+                return [yp[0],]*len(x)
             y = np.interp(x, xp, yp)
             y[x < xp[ 0]] = yp[ 0] + (x[x<xp[ 0]]-xp[ 0]) * (yp[ 0]-yp[ 1]) / (xp[ 0]-xp[ 1])
             y[x > xp[-1]] = yp[-1] + (x[x>xp[-1]]-xp[-1]) * (yp[-1]-yp[-2]) / (xp[-1]-xp[-2])
@@ -65,12 +78,20 @@ def interpolate_number(x, xp, yp, clamp=True):
     return np.interp(x, xp, yp)
 
 
+
 def interpolate_time(x, xp, yp, clamp=True):
     """
     Specialized interpolation for array of datetime values
     """
-
     x = np.asarray(x)
+    
+    # Specific case for empty domain
+    if xp[0] == xp[-1] or len(xp)<2:
+        if len(x.shape) == 0:
+            return yp[0]
+        else:
+            return [yp[0],]*len(x)
+
     delta = np.cumsum(yp[1:] - yp[:-1])
     delta = np.insert(delta, 0, 0)
     dtype = delta.dtype
@@ -83,9 +104,15 @@ def interpolate_value(x, xp, yp, clamp=True):
     """
     Generic interpolation
     """
-
     x = np.asarray(x)
     n = len(xp)
+    
+    # Specific case for empty domain
+    if xp[0] == xp[-1] or len(xp)<2:
+        if len(x.shape) == 0:
+            return yp[0]
+        else:
+            return [yp[0],]*len(x)
     
     # Build (n-1) interpolators for each interval in yp
     interpolators = []
@@ -150,7 +177,7 @@ class ContinuousScale(object):
     color(50) # "#7b5167"
     """
     
-    def __init__(self, domain=[0,1], range=[0,1], clamp=False):
+    def __init__(self, domain=[0,1], range=[0,1], clamp=False, interpolate=None):
 
         self._update_domain_range(domain, range)
         self._clamp  = clamp
@@ -188,6 +215,7 @@ class ContinuousScale(object):
 
     def _update_domain_range(self, domain, range):
 
+        # Store domain and range
         self._domain = domain
         self._range = range
         
