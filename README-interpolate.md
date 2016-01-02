@@ -1,5 +1,9 @@
 # pyd3.interpolate
 
+pyd3.interpolate is a python translation of of the
+[D3-interpolate](https://github.com/d3/d3-interpolate) module.
+
+
 This module provides a variety of interpolation methods for blending between
 two values. Values may be numbers, colors, strings, arrays, or even
 deeply-nested objects. For example:
