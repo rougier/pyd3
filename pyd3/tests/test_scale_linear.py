@@ -360,7 +360,7 @@ class test_scale_linear(unittest.TestCase):
 
     def test_35(self):
         """
-        linear.ticks(count) returns the expected ticks for an ascending domain
+        linear.ticks(count) returns the expected ticks for a polylinear domain
         """
         
         s = scale.linear(domain=[0, 0.25, 0.9, 1])
@@ -407,5 +407,22 @@ class test_scale_linear(unittest.TestCase):
         np.testing.assert_almost_equal(
             s.ticks(1), [                               0                         ])
 
+    def test_36(self):
+        """
+        linear.ticks(count) returns the empty array if count is not a positive integer
+        """
+        s = scale.linear()
+        self.assertEqual(s.ticks(None), [])
+        self.assertEqual(s.ticks(0), []);
+        self.assertEqual(s.ticks(-1), []);
+
+    def test_37(self):
+        """
+        linear.ticks() is an alias for linear.ticks(10)
+        """
+        s = scale.linear();
+        self.assertEqual(s.ticks(), s.ticks(10))
+
+        
 if __name__ == "__main__":
     unittest.main()

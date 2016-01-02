@@ -166,6 +166,16 @@ def tick_step(start, stop, count):
     else:            return +step1
 
 def ticks(start, stop, count):
+    """
+    Returns approximately count representative values from the scale’s
+    domain. If count is not specified, it defaults to 10. The returned tick
+    values are uniformly spaced, have human-readable values (such as multiples
+    of powers of 10), and are guaranteed to be within the extent of the
+    domain. Ticks are often used to display reference lines, or tick marks, in
+    conjunction with the visualized data. The specified count is only a hint;
+    the scale may return more or fewer values depending on the domain.
+    """
+    
     step = tick_step(start, stop, count)
     start = math.ceil(start/step)
     stop  = math.floor(stop/step)
@@ -228,6 +238,13 @@ class ContinuousScale(object):
 
     @property
     def range(self):
+        """
+        Range must contain two or more elements. Unlike the domain, elements in the
+        given array need not be numbers; any value that is supported by the
+        underlying interpolator will work, though note that numeric ranges are
+        required for invert.
+        """
+        
         return self._range
 
     @range.setter
@@ -286,12 +303,23 @@ class ContinuousScale(object):
             
 
     def ticks(self, count=10):
+
+        if not isinstance(count, int) or count < 1:
+            return []
         domain = self._domain
         return ticks(domain[0], domain[-1], count)
 
 
 
 class LinearScale(ContinuousScale):
+    """
+    Constructs a new continuous scale with the unit domain [0, 1], the unit
+    range [0, 1], a value interpolator and clamping disabled. Linear scales are
+    a good default choice for continuous quantitative data because they
+    preserve proportional differences. Each range value y can be expressed as a
+    function of the domain value x: y = mx + b.
+    """
+    
     def __init__(self, domain=[0,1], range=[0,1], clamp=False):
         ContinuousScale.__init__(self, domain, range, clamp)
 
@@ -305,7 +333,19 @@ class LinearScale(ContinuousScale):
             return None
 
     def nice(self, count = 10):
-
+        """
+        Extends the domain so that it starts and ends on nice round values. This
+        method typically modifies the scale’s domain, and may only extend the
+        bounds to the nearest round value. An optional tick count argument
+        allows greater control over the step size used to extend the bounds,
+        guaranteeing that the returned ticks will exactly cover the
+        domain. Nicing is useful if the domain is computed from data, say using
+        extent, and may be irregular. For example, for a domain of [0.201479…,
+        0.996679…], a nice domain might be [0.2, 1.0]. If the domain has more
+        than two values, nicing the domain only affects the first and last
+        value.
+        """
+        
         scale = LinearScale(domain=self._domain, range=self._range, clamp=self._clamp)
         d = self._domain
         n = count

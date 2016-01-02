@@ -30,7 +30,7 @@ class test_number(unittest.TestCase):
         
     def test_3(self):
         """
-        interpolate_dict(a, b)  interpolates nested dicts and list
+        interpolate_dict(a, b) interpolates nested dicts and list
         """
         i = interpolate.dict( {"foo": [2, 12]},
                               {"foo": [4, 24]})

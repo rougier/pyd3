@@ -211,6 +211,8 @@ class Color(object):
     """
     color = Color(RGB=(255, 255, 255))
     color = Color(rgb=(1.0, 1.0, 1.0))
+    color = Color(hsl=(0.0, 0.0, 1.0))
+    color = Color(hsv=(0.0, 0.0, 1.0))
     color = Color("#ffffff")
     color = Color("#fff")
     color = Color("white")
@@ -246,9 +248,25 @@ class Color(object):
             R,G,B,A = kwargs["RGB"]
             self.rgb = R/255.0, G/255.0, B/255.0
             self.alpha = A/255.0
+        elif "hsl" in kwargs.keys():
+            r,g,b = kwargs["rgb"]
+            self.rgb = hsl2rgb(h,s,l)
+            self.alpha=  1.0
+        elif "hsv" in kwargs.keys():
+            self.rgb = hsv2rgb(*kwargs["hsv"])
+            self.alpha=  1.0
+
         else:
             self.rgb = 1.0, 1.0, 1.0
             self.alpha= 1.0
+
+    @property
+    def hsl(self):        
+        return rgb2hsl(*self.rgb)
+
+    @property
+    def hsv(self):        
+        return rgb2hsv(*self.rgb)
 
     def __eq__(self,other):
         if isinstance(other,Color):
