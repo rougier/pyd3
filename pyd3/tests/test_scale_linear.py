@@ -252,7 +252,7 @@ class test_scale_linear(unittest.TestCase):
         self.assertEqual(scale.linear(domain=[123.1, 1, 2, 3, -.9]).nice(10).domain,
                          [130, 1, 2, 3, -10])
 
-    def test_31(self):
+    def test_32(self):
         """
         linear.nice(count) accepts a tick count to control nicing step
         """

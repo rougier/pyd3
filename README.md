@@ -6,9 +6,9 @@ library.
   * [color]()   — Color spaces! RGB, HSL, Cubehelix, Lab (CIELAB) and HCL (CIELCH).
   * [interpolate](#interpolate) — Interpolate numbers, colors, strings, arrays, objects, whatever!
   * [scale](#scale) — Encodings that map abstract data to visual representation.
-
-
-<a name="interpolate" href="#interpolate">#</a>interpolate
+    * [continuous](#continuous) — map a continuous, quantitative input domain to a continuous output range.
+  
+<a name="interpolate" href="#interpolate">#</a><b>interpolate</b>
 
 This module provides a variety of interpolation methods for blending between
 two values. Values may be numbers, colors, strings, arrays, or even
@@ -49,7 +49,7 @@ Note that the generic value interpolator detects not only nested objects and
 lists, but also color strings and numbers embedded in strings!
 
 
-<a name="scale" href="#scale">#</a>scale
+<a name="scale" href="#scale">#</a><b>scale</b>
 
 Scales are a convenient abstraction for a fundamental task in
 visualization: mapping a dimension of abstract data to a visual
@@ -79,3 +79,24 @@ color scales are also provided.
 Scales have no intrinsic visual representation. However, most scales can
 generate and format ticks for reference marks to aid in the construction of
 axes.
+
+<a name="continuous" href="#continuous">#</a><b>continuous</b>
+
+Given a value from the domain, returns the corresponding value from the
+range. If the given value is outside the domain, and clamping is not
+enabled, the mapping may be extrapolated such that the returned value is
+outside the range. For example, to apply a position encoding:
+
+```python
+x = scale.linear(domain=[10, 130], range=[0, 960])
+x(20) # 80
+x(50) # 320
+```
+
+Or to apply a color encoding:
+
+```python
+color = scale.linear(domain=[10, 100], range=["brown", "steelblue"])
+color(20) # "#9a3439"
+color(50) # "#7b5167"
+```
