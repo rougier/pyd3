@@ -166,5 +166,66 @@ class test_scale_linear(unittest.TestCase):
         s = scale.linear(range=[["red"], ["blue"]])
         self.assertEqual(s(.5), ["#800080"])
 
+    def test_22(self):
+        """
+        linear.clamp() is false by default
+        """
+        self.assertEqual(scale.linear().clamp, False)
+        self.assertEqual(scale.linear(range=[10, 20])(2), 30)
+        self.assertEqual(scale.linear(range=[10, 20])(-1), 0)
+        self.assertEqual(scale.linear(range=[10, 20]).invert(30), 2)
+        self.assertEqual(scale.linear(range=[10, 20]).invert(0), -1)
+
+    def test_23(self):
+        """
+        linear.clamp(true) restricts output values to the range
+        """
+        self.assertEqual(scale.linear(range=[10, 20],clamp=True)(2), 20)
+        self.assertEqual(scale.linear(range=[10, 20],clamp=True)(-1), 10)
+
+    def test_24(self):
+        """
+        linear.clamp(true) restricts input values to the domain
+        """
+        self.assertEqual(scale.linear(range=[10, 20],clamp=True).invert(30), 1)
+        self.assertEqual(scale.linear(range=[10, 20],clamp=True).invert(0), 0)
+
+    def test_25(self):
+        """
+        linear.clamp(clamp) coerces the specified clamp value to a boolean
+        """
+        self.assertEqual(scale.linear(clamp=True).clamp, True)
+        self.assertEqual(scale.linear(clamp=1).clamp, True)
+        self.assertEqual(scale.linear(clamp="").clamp, False)
+        self.assertEqual(scale.linear(clamp=0).clamp, False)
+
+    def test_26(self):
+        """
+        linear.interpolate(interpolate) takes a custom interpolator factory
+        """
+        pass
+
+    def test_27(self):
+        """
+        linear.nice() is an alias for linear.nice(10)
+        """
+        self.assertEqual(scale.linear(domain=[0,.96]).nice().domain, [0, 1])
+        self.assertEqual(scale.linear(domain=[0,96]).nice().domain, [0, 100])
+
+    def test_28(self):
+        """
+        linear.nice(count) extends the domain to match the desired ticks
+        """
+        self.assertEqual(scale.linear(domain=[ 0,.96]).nice().domain, [0, 1])
+        self.assertEqual(scale.linear(domain=[ 0, 96]).nice().domain, [0, 100])
+        self.assertEqual(scale.linear(domain=[.96, 0]).nice().domain, [1, 0])
+        self.assertEqual(scale.linear(domain=[ 96, 0]).nice().domain, [100, 0])
+        self.assertEqual(scale.linear(domain=[0,-.96]).nice().domain, [0, -1])
+        self.assertEqual(scale.linear(domain=[0, -96]).nice().domain, [0, -100])
+        self.assertEqual(scale.linear(domain=[-.96,0]).nice().domain, [-1, 0])
+        self.assertEqual(scale.linear(domain=[-96,0]).nice().domain, [-100, 0])
+        self.assertEqual(scale.linear(domain=[-0.1,51.1]).nice(8).domain, [-10, 60])
+
+    
 if __name__ == "__main__":
     unittest.main()

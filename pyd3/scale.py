@@ -35,11 +35,12 @@ Scales have no intrinsic visual representation. However, most scales can
 generate and format ticks for reference marks to aid in the construction of
 axes.
 """
-
+import math
 import numpy as np
 from pyd3 import interpolate
 
 py_range = range
+
 
 def interpolate_number(x, xp, yp, clamp=True):
     """
@@ -151,6 +152,20 @@ def interpolate_value(x, xp, yp, clamp=True):
         return [interpolators[i](x) for i,x in zip(xi,nx)]
 
 
+def tick_step(start, stop, count):
+    e10 = math.sqrt(50)
+    e5  = math.sqrt(10)
+    e2  = math.sqrt(2)
+    
+    step0 = abs(stop - start) / max(0, count)
+    step1 = math.pow(10, math.floor(math.log(step0) / math.log(10)))
+    error = step0 / step1
+    if   error >= e10: step1 *= 10
+    elif error >= e5:  step1 *= 5
+    elif error >= e2:  step1 *= 2
+    if stop < start: return -step1
+    else:            return +step1
+
 
 class ContinuousScale(object):
     """
@@ -180,7 +195,7 @@ class ContinuousScale(object):
     def __init__(self, domain=[0,1], range=[0,1], clamp=False, interpolate=None):
 
         self._update_domain_range(domain, range)
-        self._clamp  = clamp
+        self._clamp  = bool(clamp)
         if isinstance(range[0], (int,float)):
             self._interpolate = interpolate_number
         elif isinstance(range[0], np.datetime64):
@@ -194,7 +209,7 @@ class ContinuousScale(object):
 
     @clamp.setter
     def clamp(self, clamp):
-        self._clamp = clamp
+        self._clamp = bool(clamp)
 
     @property
     def domain(self):
@@ -202,7 +217,7 @@ class ContinuousScale(object):
 
     @domain.setter
     def domain(self, domain):
-        self.update_domain_range(domain, self._range)
+        self._update_domain_range(domain, self._range)
 
     @property
     def range(self):
@@ -220,9 +235,10 @@ class ContinuousScale(object):
         self._range = range
         
         # Ensure len(domain) == len(range)
-        n = min(len(self.domain), len(self.range))
+        n = min(len(domain), len(range))
         domain = domain[:n]
         range  = range[:n]
+
 
         # Coerce domain values if necessary
         # (domain may have been given as ["1", "2"])
@@ -277,7 +293,23 @@ class LinearScale(ContinuousScale):
         else:
             return None
 
+    def nice(self, count = 10):
 
+        scale = LinearScale(domain=self._domain, range=self._range, clamp=self._clamp)
+        d = self._domain
+        i = len(d)-1
+        n = count
+        start = d[0]
+        stop = d[i]
+        step = tick_step(start, stop, n)
+        if step:
+            step = tick_step(math.floor(start/step)*step, math.ceil(stop/step)*step, n)
+            d[0] = math.floor(start / step) * step
+            d[i] = math.ceil(stop / step) * step
+            scale._update_domain_range(d, self._range)
+        return scale
+    
+            
 linear = LinearScale
     
 
