@@ -5,6 +5,7 @@ library.
 
   * [color]()   — Color spaces! RGB, HSL, Cubehelix, Lab (CIELAB) and HCL (CIELCH).
   * [interpolate](#interpolate) — Interpolate numbers, colors, strings, arrays, objects, whatever!
+  * [scale](#scale) — Encodings that map abstract data to visual representation.
 
 
 <a name="interpolate" href="#interpolate">#</a>interpolate
@@ -46,3 +47,35 @@ i(1.0) # {'colors': ["#ffffff", "#000000"]}
 
 Note that the generic value interpolator detects not only nested objects and
 lists, but also color strings and numbers embedded in strings!
+
+
+<a name="scale" href="#scale">#</a>scale
+
+Scales are a convenient abstraction for a fundamental task in
+visualization: mapping a dimension of abstract data to a visual
+representation. Although most often used for position-encoding quantitative
+data, such as mapping a measurement in meters to a position in pixels for dots
+in a scatterplot, scales can represent virtually any visual encoding, such as
+diverging colors, stroke widths, or symbol size. Scales can also be used with
+virtually any type of data, such as named categorical data or discrete data
+that requires sensible breaks.
+
+For continuous quantitative data, you typically want a linear scale. (For time
+series data, a time scale.) If the distribution calls for it, consider
+transforming data using a power or log scale. A quantize scale may aid
+differentiation by rounding continuous data to a fixed set of discrete values;
+similarly, a quantile scale computes quantiles from a sample population, and a
+threshold scale allows you to specify arbitrary breaks in continuous
+data. Several built-in sequential color scales are also provided. (If you don’t
+like these palettes, try ColorBrewer.)
+
+For discrete ordinal (ordered) or categorical (unordered) data, an ordinal
+scale specifies an explicit mapping from a set of data values to a
+corresponding set of visual attributes (such as colors). The related band and
+point scales are useful for position-encoding ordinal data, such as bars in a
+bar chart or dots in an categorical scatterplot. Several built-in categorical
+color scales are also provided.
+
+Scales have no intrinsic visual representation. However, most scales can
+generate and format ticks for reference marks to aid in the construction of
+axes.

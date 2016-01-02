@@ -27,7 +27,7 @@ between steelblue and brown::
 
   interpolate.rgb("white", "black")(0.5) # "#808080
 
-Here’s a more elaborate example demonstrating type inference used by value:
+Here’s a more elaborate example demonstrating type inference used by value::
 
   i = interpolate.value({"colors": ["red", "blue"]},
                         {"colors": ["white", "black"]});
@@ -71,8 +71,14 @@ def interpolate_value(a,b):
         try:
             a, b = Color(a), Color(b)
         except ValueError:
-            return interpolate_string(a,b)
-        return interpolate_rgb(Color(a),Color(b))
+            try:
+                a, b = float(a), float(b)
+            except ValueError:
+                return interpolate_string(a,b)
+            else:
+                return interpolate_number(float(a),float(b))
+        else:
+            return interpolate_rgb(Color(a),Color(b))                
     elif isinstance(b, (py_list,py_tuple)):
         return interpolate_list(a,b)
     elif isinstance(b, py_dict):
@@ -261,3 +267,4 @@ string = interpolate_string
 __all__ = [ interpolate_rgb,   interpolate_list,   interpolate_dict,
             interpolate_value, interpolate_number, interpolate_round,
             interpolate_string ]
+
