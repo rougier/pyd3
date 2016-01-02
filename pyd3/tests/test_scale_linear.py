@@ -226,6 +226,39 @@ class test_scale_linear(unittest.TestCase):
         self.assertEqual(scale.linear(domain=[-96,0]).nice().domain, [-100, 0])
         self.assertEqual(scale.linear(domain=[-0.1,51.1]).nice(8).domain, [-10, 60])
 
-    
+    def test_29(self):
+        """
+        linear.nice(count) nices the domain, extending it to round numbers
+        """
+        self.assertEqual(scale.linear(domain=[1.1,10.9]).nice(10).domain, [1, 11])
+        self.assertEqual(scale.linear(domain=[10.9,1.1]).nice(10).domain, [11, 1])
+        self.assertEqual(scale.linear(domain=[.7,11.001]).nice(10).domain, [0, 12])
+        self.assertEqual(scale.linear(domain=[123.1,6.7]).nice(10).domain, [130, 0])
+        self.assertEqual(scale.linear(domain=[0,.49]).nice(10).domain, [0, .5])
+
+    def test_30(self):
+        """
+        linear.nice(count) has no effect on degenerate domains
+        """
+        self.assertEqual(scale.linear(domain=[0,0]).nice(10).domain, [0, 0])
+        self.assertEqual(scale.linear(domain=[.5,.5]).nice(10).domain, [.5, .5])
+
+    def test_31(self):
+        """
+        linear.nice(count) nicing a polylinear domain only affects the extent
+        """
+        self.assertEqual(scale.linear(domain=[1.1, 1, 2, 3, 10.9]).nice(10).domain,
+                         [1, 1, 2, 3, 11])
+        self.assertEqual(scale.linear(domain=[123.1, 1, 2, 3, -.9]).nice(10).domain,
+                         [130, 1, 2, 3, -10])
+
+    def test_31(self):
+        """
+        linear.nice(count) accepts a tick count to control nicing step
+        """
+        self.assertEqual(scale.linear(domain=[12,87]).nice(5).domain,[0, 100])
+        self.assertEqual(scale.linear(domain=[12,87]).nice(10).domain,[10, 90])
+        self.assertEqual(scale.linear(domain=[12,87]).nice(100).domain,[12, 87])
+        
 if __name__ == "__main__":
     unittest.main()

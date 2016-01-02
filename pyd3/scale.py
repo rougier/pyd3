@@ -297,15 +297,17 @@ class LinearScale(ContinuousScale):
 
         scale = LinearScale(domain=self._domain, range=self._range, clamp=self._clamp)
         d = self._domain
-        i = len(d)-1
         n = count
-        start = d[0]
-        stop = d[i]
+        start, stop = d[0], d[-1]
+
+        # Degenerate case
+        if start == stop: return scale
+        
         step = tick_step(start, stop, n)
         if step:
             step = tick_step(math.floor(start/step)*step, math.ceil(stop/step)*step, n)
             d[0] = math.floor(start / step) * step
-            d[i] = math.ceil(stop / step) * step
+            d[-1] = math.ceil(stop / step) * step
             scale._update_domain_range(d, self._range)
         return scale
     
