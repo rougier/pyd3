@@ -151,7 +151,6 @@ def interpolate_value(x, xp, yp, clamp=True):
         # Get output value for each x
         return [interpolators[i](x) for i,x in zip(xi,nx)]
 
-
 def tick_step(start, stop, count):
     e10 = math.sqrt(50)
     e5  = math.sqrt(10)
@@ -165,6 +164,14 @@ def tick_step(start, stop, count):
     elif error >= e2:  step1 *= 2
     if stop < start: return -step1
     else:            return +step1
+
+def ticks(start, stop, count):
+    step = tick_step(start, stop, count)
+    start = math.ceil(start/step)
+    stop  = math.floor(stop/step)
+    n = round(abs(stop-start))+1
+    t = (start + np.arange(n))*step
+    return t.tolist()
 
 
 class ContinuousScale(object):
@@ -278,8 +285,12 @@ class ContinuousScale(object):
         self._inverse_domain = domain[sorted]
             
 
+    def ticks(self, count=10):
+        domain = self._domain
+        return ticks(domain[0], domain[-1], count)
 
-    
+
+
 class LinearScale(ContinuousScale):
     def __init__(self, domain=[0,1], range=[0,1], clamp=False):
         ContinuousScale.__init__(self, domain, range, clamp)

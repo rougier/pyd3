@@ -259,6 +259,153 @@ class test_scale_linear(unittest.TestCase):
         self.assertEqual(scale.linear(domain=[12,87]).nice(5).domain,[0, 100])
         self.assertEqual(scale.linear(domain=[12,87]).nice(10).domain,[10, 90])
         self.assertEqual(scale.linear(domain=[12,87]).nice(100).domain,[12, 87])
+
+    def test_33(self):
+        """
+        linear.ticks(count) returns the expected ticks for an ascending domain
+        """
         
+        s = scale.linear()
+        np.testing.assert_almost_equal(
+            s.ticks(10), [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(9),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(8),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(7),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(6),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(5),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(4),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(3),  [0.0,                     0.5,                     1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(2),  [0.0,                     0.5,                     1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(1),  [0.0,                                              1.0])
+
+        s = scale.linear(domain=[-100,100])
+        np.testing.assert_almost_equal(
+            s.ticks(10), [-100, -80, -60,     -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(9), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(8), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(7), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(6), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(5), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(4), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(3), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(2), [-100,                          0,                     100])
+        np.testing.assert_almost_equal(
+            s.ticks(1), [                               0                         ])
+
+    def test_34(self):
+        """
+        linear.ticks(count) returns the expected ticks for a descending domain
+        """
+        
+        s = scale.linear(domain=[1,0])
+        np.testing.assert_almost_equal(
+            s.ticks(10), [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(9),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(8),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(7),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(6),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(5),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(4),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(3),  [0.0,                     0.5,                     1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(2),  [0.0,                     0.5,                     1.0][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(1),  [0.0,                                              1.0][::-1])
+
+        s = scale.linear(domain=[+100,-100])
+        np.testing.assert_almost_equal(
+            s.ticks(10), [-100, -80, -60,     -40, -20, 0, 20, 40,     60, 80, 100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(9), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(8), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(7), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(6), [-100,           -50,           0,         50,         100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(5), [-100,           -50,           0,         50,         100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(4), [-100,           -50,           0,         50,         100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(3), [-100,           -50,           0,         50,         100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(2), [-100,                          0,                     100][::-1])
+        np.testing.assert_almost_equal(
+            s.ticks(1), [                               0                         ][::-1])
+
+    def test_35(self):
+        """
+        linear.ticks(count) returns the expected ticks for an ascending domain
+        """
+        
+        s = scale.linear(domain=[0, 0.25, 0.9, 1])
+        np.testing.assert_almost_equal(
+            s.ticks(10), [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(9),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(8),  [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(7),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(6),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(5),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(4),  [0.0,      0.2,      0.4,      0.6,      0.8,      1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(3),  [0.0,                     0.5,                     1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(2),  [0.0,                     0.5,                     1.0])
+        np.testing.assert_almost_equal(
+            s.ticks(1),  [0.0,                                              1.0])
+
+        s = scale.linear(domain=[-100,0,100])
+        np.testing.assert_almost_equal(
+            s.ticks(10), [-100, -80, -60,     -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(9), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(8), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(7), [-100, -80, -60,      -40, -20, 0, 20, 40,     60, 80, 100])
+        np.testing.assert_almost_equal(
+            s.ticks(6), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(5), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(4), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(3), [-100,           -50,           0,         50,         100])
+        np.testing.assert_almost_equal(
+            s.ticks(2), [-100,                          0,                     100])
+        np.testing.assert_almost_equal(
+            s.ticks(1), [                               0                         ])
+
 if __name__ == "__main__":
     unittest.main()
